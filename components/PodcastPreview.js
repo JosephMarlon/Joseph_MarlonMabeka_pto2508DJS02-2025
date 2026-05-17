@@ -3,20 +3,57 @@
  * 
  * Displays a preview card for a podcast including cover image, title,
  * genres, number of seasons, and the last updated date.
+ * 
+ * @class PodcastPreview
+ * @extends HTMLElement
  */
 class PodcastPreview extends HTMLElement {
+    /**
+     * Initializes the component and attaches the Shadow DOM.
+     */
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-    }
-
-    connectedCallback() {
-        this.render();
-        this.setupEventListeners();
+        this.isRendered = false;
     }
 
     /**
-     * Getters and Setters for properties
+     * Defines the attributes that should trigger a re-render when changed.
+     * @returns {string[]} Array of observed attribute names.
+     */
+    static get observedAttributes() {
+        return ['image', 'title', 'genres', 'seasons', 'updated', 'podcast-id'];
+    }
+
+    /**
+     * Called when the element is added to the document.
+     * Renders the UI and sets up event listeners.
+     */
+    connectedCallback() {
+        if (!this.isRendered) {
+            this.render();
+            this.setupEventListeners();
+            this.isRendered = true;
+        }
+    }
+
+    /**
+     * Called when an observed attribute is added, removed, updated, or replaced.
+     * Triggers a re-render to reflect new data.
+     * 
+     * @param {string} name - The name of the attribute changed.
+     * @param {string} oldValue - The previous value.
+     * @param {string} newValue - The new value.
+     */
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue !== newValue && this.isRendered) {
+            this.render();
+        }
+    }
+
+    /**
+     * Getters and Setters for properties. 
+     * Setting the property reflects to the attribute.
      */
     get image() { return this.getAttribute('image') || ''; }
     set image(val) { this.setAttribute('image', val); }
@@ -37,9 +74,10 @@ class PodcastPreview extends HTMLElement {
     set podcastId(val) { this.setAttribute('podcast-id', val); }
 
     /**
-     * Helper to format the date
-     * @param {string} dateString 
-     * @returns {string} Formatted date
+     * Helper to format the date string into a readable format.
+     * 
+     * @param {string} dateString - The raw date string.
+     * @returns {string} The formatted date string (e.g., "Nov 3, 2022").
      */
     formatDate(dateString) {
         if (!dateString) return 'Unknown Date';
@@ -54,7 +92,7 @@ class PodcastPreview extends HTMLElement {
     }
 
     /**
-     * Setup event listeners for the component
+     * Attaches necessary event listeners for interactions (click, keyboard).
      */
     setupEventListeners() {
         // Accessibility: allow keyboard interaction
@@ -72,7 +110,7 @@ class PodcastPreview extends HTMLElement {
     }
 
     /**
-     * Dispatches a custom event when the component is clicked
+     * Dispatches a custom 'preview-click' event to be handled by the parent application.
      */
     fireClickEvent() {
         const event = new CustomEvent('preview-click', {
@@ -87,13 +125,13 @@ class PodcastPreview extends HTMLElement {
     }
 
     /**
-     * Render the component's HTML and CSS
+     * Generates and injects the HTML structure and CSS styling into the Shadow DOM.
      */
     render() {
         const seasonsText = `${this.seasons} Season${parseInt(this.seasons) !== 1 ? 's' : ''}`;
         const formattedDate = this.formatDate(this.updated);
 
-        this.shadowRoot.innerHTML = \`
+        this.shadowRoot.innerHTML = `
             <style>
                 :host {
                     display: block;
@@ -158,17 +196,17 @@ class PodcastPreview extends HTMLElement {
             </style>
 
             <div class="card-container" role="button" tabindex="0">
-                <img src="\${this.image}" alt="\${this.title} cover" class="card-image" loading="lazy">
+                <img src="${this.image}" alt="${this.title} cover" class="card-image" loading="lazy">
                 <div class="card-content">
-                    <h3 class="card-title">\${this.title}</h3>
+                    <h3 class="card-title">${this.title}</h3>
                     <p class="card-meta">
-                        <span class="seasons-count">\${seasonsText}</span>
+                        <span class="seasons-count">${seasonsText}</span>
                     </p>
-                    <p class="card-genres" aria-label="Genres: \${this.genres}">\${this.genres}</p>
-                    <p class="card-date">Updated: <time datetime="\${this.updated}">\${formattedDate}</time></p>
+                    <p class="card-genres" aria-label="Genres: ${this.genres}">${this.genres}</p>
+                    <p class="card-date">Updated: <time datetime="${this.updated}">${formattedDate}</time></p>
                 </div>
             </div>
-        \`;
+        `;
     }
 }
 
