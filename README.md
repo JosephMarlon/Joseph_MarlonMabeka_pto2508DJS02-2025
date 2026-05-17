@@ -62,3 +62,63 @@ The component should be designed to **accept podcast data via attributes or prop
   - How to listen for interaction events
 
 ---
+
+## PodcastPreview Web Component Documentation
+
+### 1. How to use and register the component
+
+To use the `<podcast-preview>` component, simply include the script tag in your HTML file:
+
+```html
+<script src="components/PodcastPreview.js"></script>
+```
+
+This will automatically register the custom element with the browser using `customElements.define('podcast-preview', PodcastPreview)`.
+
+You can then use the component anywhere in your HTML:
+
+```html
+<podcast-preview></podcast-preview>
+```
+
+### 2. Instructions for passing data
+
+You can pass data to the component dynamically using JavaScript by setting its properties. The component accepts the following properties:
+
+- `image`: URL string to the podcast cover image.
+- `title`: String representing the podcast title.
+- `genres`: String representing the genre names (e.g., "History, Comedy").
+- `seasons`: Number or string representing the number of seasons.
+- `updated`: Date string representing when the podcast was last updated.
+- `podcastId`: String representing the unique ID of the podcast.
+
+**Example usage in JavaScript:**
+```javascript
+const preview = document.createElement('podcast-preview');
+preview.image = 'https://example.com/cover.jpg';
+preview.title = 'My Awesome Podcast';
+preview.genres = 'Personal Growth, History';
+preview.seasons = 4;
+preview.updated = '2022-11-03T07:00:00.000Z';
+preview.podcastId = '12345';
+
+document.body.appendChild(preview);
+```
+
+### 3. How to listen for interaction events
+
+When a user interacts with the component (by clicking it, or pressing Enter/Space while focused), it dispatches a custom event named `preview-click`. This event bubbles up, so you can listen for it on the document or a parent container.
+
+The event's `detail` object contains the `id` and `title` of the podcast.
+
+**Example event listener:**
+```javascript
+document.addEventListener('preview-click', (event) => {
+    const podcastId = event.detail.id;
+    const podcastTitle = event.detail.title;
+    
+    console.log(`User clicked on: ${podcastTitle} (ID: ${podcastId})`);
+    
+    // Open a modal or navigate to a details page here
+});
+```

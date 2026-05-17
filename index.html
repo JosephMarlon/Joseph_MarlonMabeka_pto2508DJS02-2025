@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Previews Web Component Demo</title>
+    <meta name="description" content="Demo page for the PodcastPreview Web Component.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .app-header {
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .app-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .podcast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding-bottom: 4rem;
+        }
+        
+        /* Demo Modal Styles */
+        #demo-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #demo-modal.show {
+            display: block;
+        }
+        #demo-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+        }
+        #demo-modal-overlay.show {
+            display: block;
+        }
+        #close-modal {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+        }
+        #close-modal:hover {
+            background: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <h1>Podcast Discover</h1>
+            <p>Showcasing the custom &lt;podcast-preview&gt; Web Component.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Podcast Previews will be rendered here -->
+        <div id="podcast-grid" class="podcast-grid" aria-live="polite"></div>
+    </main>
+    
+    <!-- Simple Demo Modal -->
+    <div id="demo-modal-overlay"></div>
+    <div id="demo-modal">
+        <h2>Modal Interaction Detected</h2>
+        <p>You clicked on: <strong id="demo-modal-title"></strong> (ID: <span id="demo-modal-id"></span>)</p>
+        <button id="close-modal">Close</button>
+    </div>
+
+    <!-- Web Component Script -->
+    <script src="components/PodcastPreview.js"></script>
+    
+    <!-- Application Logic -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
